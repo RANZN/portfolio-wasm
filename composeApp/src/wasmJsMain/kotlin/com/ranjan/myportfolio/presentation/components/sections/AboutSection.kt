@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.*
 import com.ranjan.myportfolio.data.models.*
-import com.ranjan.myportfolio.presentation.components.common.SectionTitle
 
 @Composable
 fun AboutSection(

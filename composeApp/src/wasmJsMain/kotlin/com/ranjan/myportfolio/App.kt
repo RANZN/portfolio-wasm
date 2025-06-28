@@ -13,7 +13,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.browser.document
 import kotlinx.browser.window
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App() {
     val viewModel: PortfolioViewModel = koinViewModel()
