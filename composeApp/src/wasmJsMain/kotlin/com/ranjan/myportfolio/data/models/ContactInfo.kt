@@ -5,5 +5,6 @@ data class ContactInfo(
     val linkedin: String,
     val github: String,
     val twitter: String,
-    val phone: String? = null
+    val phone: String? = null,
+    val medium: String? = null
 )

@@ -1,84 +1,226 @@
 package com.ranjan.myportfolio.presentation.components.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.*
 import com.ranjan.myportfolio.data.models.NavigationSection
 import com.ranjan.myportfolio.data.models.Profile
 import org.jetbrains.compose.resources.painterResource
-import myportfolio.composeapp.generated.resources.Res
-import myportfolio.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun NavigationSidebar(
     profile: Profile,
     navigationSections: List<NavigationSection>,
-    selectedSection: String,
-    onSectionSelected: (String) -> Unit,
+    selectedSection: NavigationSection,
+    onSectionSelected: (NavigationSection) -> Unit,
+    isCollapsed: Boolean,
+    onToggleCollapse: () -> Unit,
+    isDarkMode: Boolean,
+    onToggleDarkMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (isCollapsed) 180f else 0f,
+        animationSpec = tween(300)
+    )
+
     Surface(
         modifier = modifier.fillMaxHeight(),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        tonalElevation = 2.dp
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 4.dp
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            ProfileSection(profile = profile)
+            // Header with collapse toggle
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Collapse toggle
+                IconButton(
+                    onClick = onToggleCollapse,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = FeatherIcons.ChevronLeft,
+                        contentDescription = if (isCollapsed) "Expand" else "Collapse",
+                        modifier = Modifier.rotate(rotationAngle),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            if (!isCollapsed) {
+                // Profile section
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // Profile picture
+                    Image(
+                        painter = painterResource(profile.profileImageRes),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+
+                    Text(
+                        text = profile.name,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Text(
+                        text = profile.title,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+            } else {
+                // Collapsed profile - just profile picture
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Image(
+                        painter = painterResource(profile.profileImageRes),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
+            // Navigation items
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                navigationSections.forEach { section ->
+                    NavigationItem(
+                        section = section,
+                        isSelected = selectedSection == section,
+                        onClick = { onSectionSelected(section) },
+                        isCollapsed = isCollapsed
+                    )
+                }
+            }
             
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.weight(1f))
             
-            navigationSections.forEach { section ->
-                NavigationDrawerItem(
-                    icon = { 
-                        Icon(
-                            imageVector = section.icon,
-                            contentDescription = section.name
-                        )
-                    },
-                    label = { Text(section.name) },
-                    selected = selectedSection == section.name,
-                    onClick = { onSectionSelected(section.name) },
-                    modifier = Modifier.fillMaxWidth()
-                )
+            // Dark mode toggle
+            if (!isCollapsed) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Dark Mode",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Switch(
+                        checked = isDarkMode,
+                        onCheckedChange = { onToggleDarkMode() }
+                    )
+                }
+            } else {
+                // Collapsed dark mode toggle - just icon
+                IconButton(
+                    onClick = onToggleDarkMode,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Icon(
+                        imageVector = if (isDarkMode) FeatherIcons.Sun else FeatherIcons.Moon,
+                        contentDescription = "Toggle Dark Mode",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ProfileSection(profile: Profile) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(vertical = 24.dp)
+private fun NavigationItem(
+    section: NavigationSection,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    isCollapsed: Boolean
+) {
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        Color.Transparent
+    }
+    
+    val contentColor = if (isSelected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+
+    Surface(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        color = backgroundColor,
+        shape = RoundedCornerShape(12.dp)
     ) {
-        Image(
-            painter = painterResource(Res.drawable.compose_multiplatform),
-            contentDescription = "Profile Picture",
+        Row(
             modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = profile.name,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = profile.title,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+                .fillMaxSize()
+                .padding(horizontal = if (isCollapsed) 8.dp else 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = if (isCollapsed) Arrangement.Center else Arrangement.Start
+        ) {
+            Icon(
+                imageVector = section.icon,
+                contentDescription = section.title,
+                modifier = Modifier.size(20.dp),
+                tint = contentColor
+            )
+            
+            if (!isCollapsed) {
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = section.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    color = contentColor
+                )
+            }
+        }
     }
 }
