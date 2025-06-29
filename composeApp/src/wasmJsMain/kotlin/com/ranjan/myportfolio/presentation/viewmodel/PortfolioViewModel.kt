@@ -23,7 +23,7 @@ class PortfolioViewModel(
             projects = emptyList(),
             articles = emptyList(),
             education = emptyList(),
-            contactInfo = ContactInfo("", "", "", "", null),
+            contactInfo = ContactInfo("", "", "", "", "", ""),
             isLoading = true
         )
     )
@@ -49,10 +49,10 @@ class PortfolioViewModel(
         _selectedSection.value = initialSection
 
         // Listen for browser back/forward events
-        window.addEventListener("popstate", { event ->
+        window.addEventListener("popstate") { event ->
             val section = getSectionFromUrl()
             _selectedSection.value = section
-        })
+        }
     }
 
     private fun getSectionFromUrl(): NavigationSection {

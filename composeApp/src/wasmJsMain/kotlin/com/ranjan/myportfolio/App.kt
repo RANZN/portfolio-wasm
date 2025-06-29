@@ -24,8 +24,8 @@ fun App() {
     var isNavigationCollapsed by remember { mutableStateOf(false) }
 
     // Set document title based on profile name and selected section
-    LaunchedEffect(uiState.profile, selectedSection) {
-        document.title = "${uiState.profile.name} - ${selectedSection.title} | Portfolio"
+    LaunchedEffect(Unit) {
+        document.title = "${uiState.profile.name} | Portfolio"
     }
 
     // Update URL when section changes
