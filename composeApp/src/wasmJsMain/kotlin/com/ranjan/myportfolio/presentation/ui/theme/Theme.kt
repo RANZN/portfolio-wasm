@@ -1,4 +1,4 @@
-package com.ranjan.myportfolio.presentation.theme
+package com.ranjan.myportfolio.presentation.ui.theme
 
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color

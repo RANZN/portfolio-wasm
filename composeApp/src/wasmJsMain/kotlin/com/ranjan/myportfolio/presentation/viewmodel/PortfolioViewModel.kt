@@ -11,22 +11,13 @@ import com.ranjan.myportfolio.domain.models.PortfolioState
 import com.ranjan.myportfolio.domain.repository.PortfolioRepository
 import kotlinx.browser.window
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.update
 
 class PortfolioViewModel(
     private val repository: PortfolioRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        PortfolioState(
-            profile = Profile("", "", emptyList()),
-            skills = emptyList(),
-            projects = emptyList(),
-            articles = emptyList(),
-            education = emptyList(),
-            contactInfo = ContactInfo("", "", "", "", "", ""),
-            isLoading = true
-        )
-    )
+    private val _uiState = MutableStateFlow(PortfolioState())
     val uiState: StateFlow<PortfolioState> = _uiState.asStateFlow()
 
     private val _selectedSection = MutableStateFlow(NavigationSection.ABOUT)
@@ -86,20 +77,24 @@ class PortfolioViewModel(
                 val education = educationDeferred.await()
                 val contactInfo = contactInfoDeferred.await()
 
-                _uiState.value = PortfolioState(
-                    profile = profile,
-                    skills = skills,
-                    projects = projects,
-                    articles = articles,
-                    education = education,
-                    contactInfo = contactInfo,
-                    isLoading = false
-                )
+                _uiState.update {
+                    it.copy(
+                        profile = profile ?: it.profile,
+                        skills = skills,
+                        projects = projects,
+                        articles = articles,
+                        education = education,
+                        contactInfo = contactInfo,
+                        isLoading = false
+                    )
+                }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = "Failed to load portfolio data: ${e.message}"
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Failed to load portfolio data: ${e.message}"
+                    )
+                }
             }
         }
     }

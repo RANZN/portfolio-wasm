@@ -1,13 +1,34 @@
 package com.ranjan.myportfolio.presentation.components.navigation
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,10 +38,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.*
 import com.ranjan.myportfolio.data.models.NavigationSection
 import com.ranjan.myportfolio.data.models.Profile
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronLeft
+import compose.icons.feathericons.Moon
+import compose.icons.feathericons.Sun
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -70,54 +93,60 @@ fun NavigationSidebar(
                     )
                 }
             }
-
-            if (!isCollapsed) {
-                // Profile section
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    // Profile picture
-                    Image(
-                        painter = painterResource(profile.profileImageRes),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Text(
-                        text = profile.name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    
-                    Text(
-                        text = profile.title,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+            AnimatedContent(
+                targetState = isCollapsed,
+                transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
                 }
+            ) { isCollapsedState ->
+                if (!isCollapsedState) {
+                    // Profile section
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        // Profile picture
+                        Image(
+                            painter = painterResource(profile.profileImageRes),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
 
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
-            } else {
-                // Collapsed profile - just profile picture
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Image(
-                        painter = painterResource(profile.profileImageRes),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
+                        Text(
+                            text = profile.name,
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+                        Text(
+                            text = profile.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
+                } else {
+                    // Collapsed profile - just profile picture
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(profile.profileImageRes),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
 
@@ -134,9 +163,9 @@ fun NavigationSidebar(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.weight(1f))
-            
+
             // Dark mode toggle
             if (!isCollapsed) {
                 Row(
@@ -183,7 +212,7 @@ private fun NavigationItem(
     } else {
         Color.Transparent
     }
-    
+
     val contentColor = if (isSelected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
@@ -211,7 +240,7 @@ private fun NavigationItem(
                 modifier = Modifier.size(20.dp),
                 tint = contentColor
             )
-            
+
             if (!isCollapsed) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(

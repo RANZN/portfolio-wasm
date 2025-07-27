@@ -8,7 +8,8 @@ import androidx.compose.ui.unit.dp
 import com.ranjan.myportfolio.presentation.viewmodel.PortfolioViewModel
 import com.ranjan.myportfolio.presentation.components.navigation.*
 import com.ranjan.myportfolio.presentation.screens.*
-import com.ranjan.myportfolio.presentation.theme.*
+import com.ranjan.myportfolio.presentation.ui.theme.PortfolioDarkColorScheme
+import com.ranjan.myportfolio.presentation.ui.theme.PortfolioLightColorScheme
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.browser.document
 import kotlinx.browser.window

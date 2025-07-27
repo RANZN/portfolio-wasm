@@ -1,6 +1,7 @@
 package com.ranjan.myportfolio
 
 import com.ranjan.myportfolio.data.models.*
+import com.ranjan.myportfolio.presentation.ui.icons.KotlinMultiplatform
 import compose.icons.SimpleIcons
 import compose.icons.simpleicons.*
 import myportfolio.composeapp.generated.resources.Res
@@ -24,7 +25,12 @@ object UserData {
 
     val SKILLS = listOf(
         Skill("Kotlin", 0.9f, SimpleIcons.Kotlin),
-        Skill("Kotlin Multiplatform", 0.85f, SimpleIcons.Kotlin),
+        Skill("Kotlin Multiplatform", 0.7f, SimpleIcons.KotlinMultiplatform),
+        Skill(
+            "Compose Multiplatform",
+            0.8f,
+            SimpleIcons.KotlinMultiplatform
+        ),
         Skill("Jetpack Compose", 0.85f, SimpleIcons.Kotlin),
         Skill("Android", 0.9f, SimpleIcons.Android),
         Skill("Android Studio", 0.85f, SimpleIcons.Androidstudio),
@@ -46,13 +52,27 @@ object UserData {
         Project(
             title = "SmartCents",
             description = "Personal finance management app with expense tracking and budget management using modern Android architecture",
-            technologies = listOf("Kotlin", "Android", "Room", "MVVM", "Material Design", "Jetpack Compose"),
+            technologies = listOf(
+                "Kotlin",
+                "Android",
+                "Room",
+                "MVVM",
+                "Material Design",
+                "Jetpack Compose"
+            ),
             link = "https://github.com/RANZN/SmartCents"
         ),
         Project(
             title = "Forum Mobile Android",
             description = "Mobile forum application with real-time messaging and community features built with modern Android stack",
-            technologies = listOf("Kotlin", "Android", "Firebase", "Material Design", "Real-time", "Jetpack Compose"),
+            technologies = listOf(
+                "Kotlin",
+                "Android",
+                "Firebase",
+                "Material Design",
+                "Real-time",
+                "Jetpack Compose"
+            ),
             link = "https://github.com/RANZN/forum-mobile-android"
         ),
         Project(
