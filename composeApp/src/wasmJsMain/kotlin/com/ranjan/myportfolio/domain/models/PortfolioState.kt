@@ -8,7 +8,5 @@ data class PortfolioState(
     val projects: List<Project> = emptyList(),
     val articles: List<Article> = emptyList(),
     val education: List<Education> = emptyList(),
-    val contactInfo: ContactInfo = ContactInfo(),
-    val isLoading: Boolean = false,
-    val error: String? = null
+    val contactInfo: ContactInfo = ContactInfo()
 )

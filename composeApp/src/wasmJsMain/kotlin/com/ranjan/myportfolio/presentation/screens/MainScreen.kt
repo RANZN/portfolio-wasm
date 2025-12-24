@@ -8,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.ranjan.myportfolio.domain.models.PortfolioState
 import com.ranjan.myportfolio.presentation.components.sections.*
 import com.ranjan.myportfolio.data.models.NavigationSection
@@ -17,7 +16,7 @@ import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun MainContent(
-    uiState: PortfolioState,
+    portfolioState: PortfolioState,
     selectedSection: NavigationSection,
     onSectionSelected: (NavigationSection) -> Unit = {},
     modifier: Modifier = Modifier,
@@ -55,31 +54,31 @@ fun MainContent(
             ) { section ->
                 when (section) {
                 ABOUT -> AboutSection(
-                    profile = uiState.profile,
-                    contactInfo = uiState.contactInfo,
-                    skills = uiState.skills,
-                    articles = uiState.articles,
+                    profile = portfolioState.profile,
+                    contactInfo = portfolioState.contactInfo,
+                    skills = portfolioState.skills,
+                    articles = portfolioState.articles,
                     onSectionSelected = onSectionSelected,
                     isLargeScreen = isLargeScreen
                 )
                 SKILLS -> SkillsSection(
-                    skills = uiState.skills,
+                    skills = portfolioState.skills,
                     isLargeScreen = isLargeScreen
                 )
                 PROJECTS -> ProjectsSection(
-                    projects = uiState.projects,
+                    projects = portfolioState.projects,
                     isLargeScreen = isLargeScreen
                 )
                 ARTICLES -> ArticlesSection(
-                    articles = uiState.articles,
+                    articles = portfolioState.articles,
                     isLargeScreen = isLargeScreen
                 )
                 EDUCATION -> EducationSection(
-                    education = uiState.education,
+                    education = portfolioState.education,
                     isLargeScreen = isLargeScreen
                 )
                     CONTACT -> ContactSection(
-                        contactInfo = uiState.contactInfo,
+                        contactInfo = portfolioState.contactInfo,
                         isLargeScreen = isLargeScreen
                     )
                 }

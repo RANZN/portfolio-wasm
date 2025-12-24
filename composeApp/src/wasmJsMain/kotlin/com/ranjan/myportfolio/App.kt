@@ -12,6 +12,7 @@ import com.ranjan.myportfolio.presentation.screens.*
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioDarkColorScheme
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioLightColorScheme
 import com.ranjan.myportfolio.presentation.ui.components.AnimatedBackground
+import com.ranjan.myportfolio.presentation.intent.PortfolioIntent
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -20,33 +21,27 @@ import kotlinx.browser.window
 fun App() {
     val viewModel: PortfolioViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val selectedSection by viewModel.selectedSection.collectAsState()
-    val navigationSections by viewModel.navigationSections.collectAsState()
-    val isDarkMode by viewModel.isDarkMode.collectAsState()
 
-    var isNavigationCollapsed by remember { mutableStateOf(false) }
+    val portfolioState = uiState.portfolioState
 
-    // Set document title based on profile name and selected section
-    LaunchedEffect(Unit) {
-        document.title = "${uiState.profile.name} | Portfolio"
+    LaunchedEffect(portfolioState.profile.name, uiState.selectedSection) {
+        document.title = "${portfolioState.profile.name} | Portfolio"
     }
 
-    // Update URL when section changes
-    LaunchedEffect(selectedSection) {
-        if (window.location.hash != "#${selectedSection.title}") {
-            window.history.replaceState(null, "", "#${selectedSection.title}")
+    LaunchedEffect(uiState.selectedSection) {
+        if (window.location.hash != "#${uiState.selectedSection.title}") {
+            window.history.replaceState(null, "", "#${uiState.selectedSection.title}")
         }
     }
 
     MaterialTheme(
-        colorScheme = if (isDarkMode) PortfolioDarkColorScheme else PortfolioLightColorScheme
+        colorScheme = if (uiState.isDarkMode) PortfolioDarkColorScheme else PortfolioLightColorScheme
     ) {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Animated background lines
             AnimatedBackground(
                 modifier = Modifier.fillMaxSize()
             )
@@ -62,54 +57,51 @@ fun App() {
                 uiState.error != null -> {
                     ErrorScreen(
                         error = uiState.error!!,
-                        onRetry = { viewModel.refreshData() },
-                        onDismiss = { viewModel.clearError() }
+                        onRetry = { viewModel.handleIntent(PortfolioIntent.RefreshData) },
+                        onDismiss = { viewModel.handleIntent(PortfolioIntent.ClearError) }
                     )
                 }
 
                 else -> {
                     if (isLargeScreen) {
-                        // Large screen layout with navigation sidebar
                         Row(modifier = Modifier.fillMaxSize()) {
                             NavigationSidebar(
-                                profile = uiState.profile,
-                                navigationSections = navigationSections,
-                                selectedSection = selectedSection,
-                                onSectionSelected = { viewModel.selectSection(it) },
-                                isCollapsed = isNavigationCollapsed,
+                                profile = portfolioState.profile,
+                                navigationSections = uiState.navigationSections,
+                                selectedSection = uiState.selectedSection,
+                                onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
+                                isCollapsed = uiState.isNavigationCollapsed,
                                 onToggleCollapse = {
-                                    isNavigationCollapsed = !isNavigationCollapsed
+                                    viewModel.handleIntent(PortfolioIntent.ToggleNavigationCollapse(!uiState.isNavigationCollapsed))
                                 },
-                                isDarkMode = isDarkMode,
-                                onToggleDarkMode = { viewModel.toggleDarkMode() },
-                                modifier = Modifier.width(if (isNavigationCollapsed) 80.dp else 280.dp)
+                                isDarkMode = uiState.isDarkMode,
+                                onToggleDarkMode = { viewModel.handleIntent(PortfolioIntent.ToggleDarkMode) },
+                                modifier = Modifier.width(if (uiState.isNavigationCollapsed) 80.dp else 280.dp)
                             )
 
-                            // Main content
                             MainContent(
-                                uiState = uiState,
-                                selectedSection = selectedSection,
-                                onSectionSelected = { viewModel.selectSection(it) },
+                                portfolioState = portfolioState,
+                                selectedSection = uiState.selectedSection,
+                                onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
                                 modifier = Modifier.weight(1f),
                                 isLargeScreen = isLargeScreen
                             )
                         }
                     } else {
-                        // Small/medium screen layout with top navigation
                         Column(modifier = Modifier.fillMaxSize()) {
                             TopNavigationBar(
-                                navigationSections = navigationSections,
-                                selectedSection = selectedSection,
-                                onSectionSelected = { viewModel.selectSection(it) },
+                                navigationSections = uiState.navigationSections,
+                                selectedSection = uiState.selectedSection,
+                                onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
                                 isCompact = !isMediumScreen,
-                                isDarkMode = isDarkMode,
-                                onToggleDarkMode = { viewModel.toggleDarkMode() }
+                                isDarkMode = uiState.isDarkMode,
+                                onToggleDarkMode = { viewModel.handleIntent(PortfolioIntent.ToggleDarkMode) }
                             )
 
                             MainContent(
-                                uiState = uiState,
-                                selectedSection = selectedSection,
-                                onSectionSelected = { viewModel.selectSection(it) },
+                                portfolioState = portfolioState,
+                                selectedSection = uiState.selectedSection,
+                                onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
                                 modifier = Modifier.weight(1f),
                                 isLargeScreen = isLargeScreen
                             )

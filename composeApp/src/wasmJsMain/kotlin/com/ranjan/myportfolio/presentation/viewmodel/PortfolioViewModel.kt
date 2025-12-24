@@ -9,58 +9,67 @@ import kotlinx.coroutines.launch
 import com.ranjan.myportfolio.data.models.*
 import com.ranjan.myportfolio.domain.models.PortfolioState
 import com.ranjan.myportfolio.domain.repository.PortfolioRepository
-import kotlinx.browser.window
+import com.ranjan.myportfolio.presentation.intent.PortfolioIntent
+import com.ranjan.myportfolio.presentation.navigation.NavigationManager
+import com.ranjan.myportfolio.presentation.ui.PortfolioUiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.update
 
+/**
+ * ViewModel following MVI (Model-View-Intent) architecture
+ * Handles all user intents and updates the single source of truth state
+ * Separates domain state (data) from UI state (navigation, theme, etc.)
+ */
 class PortfolioViewModel(
-    private val repository: PortfolioRepository
+    private val repository: PortfolioRepository,
+    private val navigationManager: NavigationManager
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PortfolioState())
-    val uiState: StateFlow<PortfolioState> = _uiState.asStateFlow()
-
-    private val _selectedSection = MutableStateFlow(NavigationSection.ABOUT)
-    val selectedSection: StateFlow<NavigationSection> = _selectedSection.asStateFlow()
-
-    private val _navigationSections = MutableStateFlow(NavigationSection.entries.toList())
-    val navigationSections: StateFlow<List<NavigationSection>> = _navigationSections.asStateFlow()
-
-    private val _isDarkMode = MutableStateFlow(true)
-    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+    private val _uiState = MutableStateFlow(
+        PortfolioUiState(
+            portfolioState = PortfolioState(),
+            selectedSection = NavigationSection.ABOUT,
+            navigationSections = NavigationSection.entries.toList(),
+            isDarkMode = true,
+            isNavigationCollapsed = false
+        )
+    )
+    
+    val uiState: StateFlow<PortfolioUiState> = _uiState.asStateFlow()
 
     init {
-        loadPortfolioData()
-        initializeBrowserHistory()
+        initializeNavigation()
+        handleIntent(PortfolioIntent.LoadPortfolioData)
     }
 
-    private fun initializeBrowserHistory() {
-        // Get initial section from URL hash
-        val initialSection = getSectionFromUrl()
-        _selectedSection.value = initialSection
+    override fun onCleared() {
+        super.onCleared()
+        navigationManager.removeNavigationListener()
+    }
 
-        // Listen for browser back/forward events
-        window.addEventListener("popstate") { event ->
-            val section = getSectionFromUrl()
-            _selectedSection.value = section
+    fun handleIntent(intent: PortfolioIntent) {
+        when (intent) {
+            is PortfolioIntent.LoadPortfolioData -> loadPortfolioData()
+            is PortfolioIntent.RefreshData -> refreshData()
+            is PortfolioIntent.ClearError -> clearError()
+            is PortfolioIntent.ToggleDarkMode -> toggleDarkMode()
+            is PortfolioIntent.SelectSection -> selectSection(intent.section)
+            is PortfolioIntent.ToggleNavigationCollapse -> toggleNavigationCollapse(intent.isCollapsed)
         }
     }
 
-    private fun getSectionFromUrl(): NavigationSection {
-        val hash = window.location.hash
-        return if (hash.startsWith("#")) {
-            NavigationSection.fromUrlHash(hash.substring(1))
-        } else {
-            NavigationSection.ABOUT
-        }
-    }
+    private fun initializeNavigation() {
+        val initialSection = navigationManager.getCurrentSection()
+        _uiState.update { it.copy(selectedSection = initialSection) }
 
-    private fun updateUrl(section: NavigationSection) {
-        val newUrl = "${window.location.pathname}#${section.title}"
-        window.history.pushState(null, "", newUrl)
+        navigationManager.setupNavigationListener { section ->
+            _uiState.update { it.copy(selectedSection = section) }
+        }
     }
 
     private fun loadPortfolioData() {
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        
         viewModelScope.launch {
             try {
                 val profileDeferred = async { repository.getProfile() }
@@ -77,15 +86,18 @@ class PortfolioViewModel(
                 val education = educationDeferred.await()
                 val contactInfo = contactInfoDeferred.await()
 
-                _uiState.update {
+                _uiState.update { 
                     it.copy(
-                        profile = profile ?: it.profile,
-                        skills = skills,
-                        projects = projects,
-                        articles = articles,
-                        education = education,
-                        contactInfo = contactInfo,
-                        isLoading = false
+                        portfolioState = it.portfolioState.copy(
+                            profile = profile ?: it.portfolioState.profile,
+                            skills = skills,
+                            projects = projects,
+                            articles = articles,
+                            education = education,
+                            contactInfo = contactInfo
+                        ),
+                        isLoading = false,
+                        error = null
                     )
                 }
             } catch (e: Exception) {
@@ -99,22 +111,30 @@ class PortfolioViewModel(
         }
     }
 
-    fun selectSection(section: NavigationSection) {
-        if (_selectedSection.value != section) {
-            _selectedSection.value = section
-            updateUrl(section)
+    private fun selectSection(section: NavigationSection) {
+        _uiState.update { currentState ->
+            if (currentState.selectedSection != section) {
+                navigationManager.updateUrl(section)
+                currentState.copy(selectedSection = section)
+            } else {
+                currentState
+            }
         }
     }
 
-    fun toggleDarkMode() {
-        _isDarkMode.value = !_isDarkMode.value
+    private fun toggleDarkMode() {
+        _uiState.update { it.copy(isDarkMode = !it.isDarkMode) }
     }
 
-    fun refreshData() {
+    private fun toggleNavigationCollapse(isCollapsed: Boolean) {
+        _uiState.update { it.copy(isNavigationCollapsed = isCollapsed) }
+    }
+
+    private fun refreshData() {
         loadPortfolioData()
     }
 
-    fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
+    private fun clearError() {
+        _uiState.update { it.copy(error = null) }
     }
 }
