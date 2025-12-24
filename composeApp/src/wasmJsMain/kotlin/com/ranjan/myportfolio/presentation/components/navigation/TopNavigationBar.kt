@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.*
 import com.ranjan.myportfolio.data.models.NavigationSection
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun TopNavigationBar(
@@ -28,12 +29,12 @@ fun TopNavigationBar(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp
+        tonalElevation = DesignSystem.Elevation.xl
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = DesignSystem.Spacing.md, vertical = DesignSystem.Spacing.sm),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -44,7 +45,7 @@ fun TopNavigationBar(
                     modifier = Modifier
                         .weight(1f)
                         .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                 ) {
                     navigationSections.forEach { section ->
                         CompactNavigationItem(
@@ -61,7 +62,7 @@ fun TopNavigationBar(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         navigationSections.forEach { section ->
@@ -113,12 +114,12 @@ private fun CompactNavigationItem(
         onClick = onClick,
         modifier = Modifier.height(40.dp),
         color = backgroundColor,
-        shape = RoundedCornerShape(20.dp)
+        shape = DesignSystem.Cards.shape
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = if (isSelected) 16.dp else 12.dp),
+            modifier = Modifier.padding(horizontal = if (isSelected) DesignSystem.Spacing.md else DesignSystem.Spacing.sm),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(if (isSelected) 8.dp else 0.dp)
+            horizontalArrangement = Arrangement.spacedBy(if (isSelected) DesignSystem.Spacing.sm else 0.dp)
         ) {
             Icon(
                 imageVector = section.icon,
@@ -149,7 +150,7 @@ private fun FullNavigationItem(
     val textColor = if (isSelected) {
         MaterialTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.7f) // Use primary color instead of onSurface
     }
 
     TextButton(
@@ -161,7 +162,7 @@ private fun FullNavigationItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
         ) {
             Icon(
                 imageVector = section.icon,

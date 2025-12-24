@@ -1,5 +1,7 @@
 package com.ranjan.myportfolio.presentation.screens
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,6 +13,7 @@ import com.ranjan.myportfolio.domain.models.PortfolioState
 import com.ranjan.myportfolio.presentation.components.sections.*
 import com.ranjan.myportfolio.data.models.NavigationSection
 import com.ranjan.myportfolio.data.models.NavigationSection.*
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun MainContent(
@@ -32,17 +35,25 @@ fun MainContent(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(
-                horizontal = if (isLargeScreen) 48.dp else 20.dp,
-                vertical = 32.dp
+                horizontal = if (isLargeScreen) DesignSystem.Spacing.xxl else DesignSystem.Spacing.lg,
+                vertical = DesignSystem.Spacing.xl
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Content container with max width for better readability
         Column(
-            modifier = Modifier.widthIn(max = 1200.dp),
-            verticalArrangement = Arrangement.spacedBy(48.dp)
+            modifier = Modifier.widthIn(max = DesignSystem.Layout.contentMaxWidth),
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xxl)
         ) {
-            when (selectedSection) {
+            AnimatedContent(
+                targetState = selectedSection,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(DesignSystem.Animation.normal)) togetherWith
+                            fadeOut(animationSpec = tween(DesignSystem.Animation.normal))
+                },
+                label = "section_transition"
+            ) { section ->
+                when (section) {
                 ABOUT -> AboutSection(
                     profile = uiState.profile,
                     contactInfo = uiState.contactInfo,
@@ -67,10 +78,11 @@ fun MainContent(
                     education = uiState.education,
                     isLargeScreen = isLargeScreen
                 )
-                CONTACT -> ContactSection(
-                    contactInfo = uiState.contactInfo,
-                    isLargeScreen = isLargeScreen
-                )
+                    CONTACT -> ContactSection(
+                        contactInfo = uiState.contactInfo,
+                        isLargeScreen = isLargeScreen
+                    )
+                }
             }
         }
     }

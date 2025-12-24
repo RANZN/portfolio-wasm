@@ -2,18 +2,24 @@ package com.ranjan.myportfolio.presentation.components.sections
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import com.ranjan.myportfolio.data.models.Article
 import com.ranjan.myportfolio.presentation.components.cards.ArticleCard
 import com.ranjan.myportfolio.presentation.components.common.SectionTitle
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun ArticlesSection(articles: List<Article>, isLargeScreen: Boolean) {
-    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)
+    ) {
         SectionTitle("Articles")
         
-        articles.forEach { article ->
-            ArticleCard(article)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg)
+        ) {
+            articles.forEach { article ->
+                ArticleCard(article)
+            }
         }
     }
 }

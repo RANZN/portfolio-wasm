@@ -38,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 import com.ranjan.myportfolio.data.models.NavigationSection
 import com.ranjan.myportfolio.data.models.Profile
 import compose.icons.FeatherIcons
@@ -66,13 +67,13 @@ fun NavigationSidebar(
     Surface(
         modifier = modifier.fillMaxHeight(),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 4.dp
+        tonalElevation = DesignSystem.Elevation.lg
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(DesignSystem.Spacing.md),
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
         ) {
             // Header with collapse toggle
             Row(
@@ -103,7 +104,7 @@ fun NavigationSidebar(
                     // Profile section
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                     ) {
                         // Profile picture
                         Image(
@@ -152,7 +153,7 @@ fun NavigationSidebar(
 
             // Navigation items
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
             ) {
                 navigationSections.forEach { section ->
                     NavigationItem(
@@ -216,6 +217,12 @@ private fun NavigationItem(
     val contentColor = if (isSelected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.8f) // Use primary color for icons when not selected
+    }
+    
+    val textColor = if (isSelected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
         MaterialTheme.colorScheme.onSurface
     }
 
@@ -225,12 +232,12 @@ private fun NavigationItem(
             .fillMaxWidth()
             .height(48.dp),
         color = backgroundColor,
-        shape = RoundedCornerShape(12.dp)
+        shape = DesignSystem.Cards.shape
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = if (isCollapsed) 8.dp else 16.dp),
+                .padding(horizontal = if (isCollapsed) DesignSystem.Spacing.sm else DesignSystem.Spacing.md),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = if (isCollapsed) Arrangement.Center else Arrangement.Start
         ) {
@@ -242,12 +249,12 @@ private fun NavigationItem(
             )
 
             if (!isCollapsed) {
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
                 Text(
                     text = section.title,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                    color = contentColor
+                    color = textColor
                 )
             }
         }

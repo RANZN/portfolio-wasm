@@ -39,7 +39,9 @@ object UserData {
         Skill("Git", 0.8f, SimpleIcons.Git),
         Skill("GitHub", 0.8f, SimpleIcons.Github),
         Skill("Bitbucket", 0.75f, SimpleIcons.Bitbucket),
-        Skill("Firebase", 0.7f, SimpleIcons.Firebase)
+        Skill("Firebase", 0.7f, SimpleIcons.Firebase),
+        Skill("Ktor", 0.3f, SimpleIcons.Kotlin),
+        Skill("Koin", 0.8f, SimpleIcons.Kotlin)
     )
 
     val PROJECTS = listOf(

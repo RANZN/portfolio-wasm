@@ -2,18 +2,24 @@ package com.ranjan.myportfolio.presentation.components.sections
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import com.ranjan.myportfolio.data.models.Education
 import com.ranjan.myportfolio.presentation.components.cards.EducationCard
 import com.ranjan.myportfolio.presentation.components.common.SectionTitle
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun EducationSection(education: List<Education>, isLargeScreen: Boolean) {
-    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)
+    ) {
         SectionTitle("Education")
         
-        education.forEach { edu ->
-            EducationCard(edu)
+        Column(
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg)
+        ) {
+            education.forEach { edu ->
+                EducationCard(edu)
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.ranjan.myportfolio.presentation.components.sections
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -15,34 +17,89 @@ import compose.icons.feathericons.*
 import compose.icons.simpleicons.*
 import com.ranjan.myportfolio.data.models.ContactInfo
 import com.ranjan.myportfolio.presentation.components.common.SectionTitle
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
 fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
     val uriHandler = LocalUriHandler.current
 
-    Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)) {
         SectionTitle("Contact Me")
 
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+            shape = DesignSystem.Cards.shape,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        shape = DesignSystem.Cards.shape
+                    ),
+                shape = DesignSystem.Cards.shape,
+                color = MaterialTheme.colorScheme.surface
             ) {
-                Text(
-                    text = "Let's work together!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "I'm always interested in new opportunities and exciting projects. Feel free to reach out!",
-                    style = MaterialTheme.typography.bodyLarge,
-                    lineHeight = 24.sp
-                )
+                Column(
+                    modifier = Modifier.padding(DesignSystem.Cards.padding),
+                    verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
+                ) {
+                    Text(
+                        text = "Let's work together!",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "I'm always interested in new opportunities and exciting projects. Feel free to reach out!",
+                        style = MaterialTheme.typography.bodyLarge,
+                        lineHeight = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
+                    
+                    // Email display with icon
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { uriHandler.openUri("mailto:${contactInfo.email}") },
+                        shape = DesignSystem.Cards.shape,
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                        border = androidx.compose.foundation.BorderStroke(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(DesignSystem.Spacing.md),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
+                        ) {
+                            Icon(
+                                imageVector = FeatherIcons.Mail,
+                                contentDescription = "Email",
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = contactInfo.email,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
 
                 // Create list of available contact methods
                 val contactMethods = buildList {
@@ -100,24 +157,25 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                     // Large screen - arrange in rows (2 columns)
                     val chunkedMethods = contactMethods.chunked(2)
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                     ) {
                         chunkedMethods.forEach { rowMethods ->
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 rowMethods.forEach { method ->
                                     OutlinedButton(
                                         onClick = method.action,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier.weight(1f),
+                                        shape = DesignSystem.Cards.shape
                                     ) {
                                         Icon(
                                             imageVector = method.icon,
                                             contentDescription = method.label,
                                             modifier = Modifier.size(18.dp)
                                         )
-                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
                                         Text(method.label)
                                     }
                                 }
@@ -131,23 +189,25 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                 } else {
                     // Small screen - single column layout
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                     ) {
                         contactMethods.forEach { method ->
                             OutlinedButton(
                                 onClick = method.action,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = DesignSystem.Cards.shape
                             ) {
                                 Icon(
                                     imageVector = method.icon,
                                     contentDescription = method.label,
                                     modifier = Modifier.size(18.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.width(DesignSystem.Spacing.sm))
                                 Text(method.label)
                             }
                         }
                     }
+                }
                 }
             }
         }

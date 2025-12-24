@@ -1,5 +1,6 @@
 package com.ranjan.myportfolio
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,6 +11,7 @@ import com.ranjan.myportfolio.presentation.components.navigation.*
 import com.ranjan.myportfolio.presentation.screens.*
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioDarkColorScheme
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioLightColorScheme
+import com.ranjan.myportfolio.presentation.ui.components.AnimatedBackground
 import org.koin.compose.viewmodel.koinViewModel
 import kotlinx.browser.document
 import kotlinx.browser.window
@@ -39,7 +41,16 @@ fun App() {
     MaterialTheme(
         colorScheme = if (isDarkMode) PortfolioDarkColorScheme else PortfolioLightColorScheme
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            // Animated background lines
+            AnimatedBackground(
+                modifier = Modifier.fillMaxSize()
+            )
+            
             val isLargeScreen = maxWidth > 1200.dp
             val isMediumScreen = maxWidth > 800.dp
 

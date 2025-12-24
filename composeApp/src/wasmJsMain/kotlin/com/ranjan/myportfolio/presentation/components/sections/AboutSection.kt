@@ -1,5 +1,6 @@
 package com.ranjan.myportfolio.presentation.components.sections
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 import com.ranjan.myportfolio.data.models.Article
 import com.ranjan.myportfolio.data.models.ContactInfo
 import com.ranjan.myportfolio.data.models.NavigationSection
@@ -53,15 +56,16 @@ fun AboutSection(
 ) {
     val uriHandler = LocalUriHandler.current
 
-    Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)) {
         // Profile Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+            shape = DesignSystem.Cards.shape
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(DesignSystem.Cards.padding),
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -72,12 +76,15 @@ fun AboutSection(
                         Text(
                             text = profile.name,
                             style = MaterialTheme.typography.headlineLarge,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+                        Spacer(modifier = Modifier.height(DesignSystem.Spacing.xs))
                         Text(
                             text = profile.title,
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
@@ -86,7 +93,8 @@ fun AboutSection(
                     Text(
                         text = paragraph,
                         style = MaterialTheme.typography.bodyLarge,
-                        lineHeight = 24.sp
+                        lineHeight = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -95,16 +103,33 @@ fun AboutSection(
         // Follow Me Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+            shape = DesignSystem.Cards.shape,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f),
+                        shape = DesignSystem.Cards.shape
+                    ),
+                shape = DesignSystem.Cards.shape,
+                color = MaterialTheme.colorScheme.surface
             ) {
+                Column(
+                    modifier = Modifier.padding(DesignSystem.Cards.padding),
+                    verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
+                ) {
                 Text(
                     text = "Follow Me On",
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 // Create list of available social media platforms
@@ -154,7 +179,7 @@ fun AboutSection(
                     // Large screen - horizontal layout
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
                     ) {
                         socialMediaPlatforms.forEach { platform ->
                             SocialMediaButton(
@@ -170,12 +195,12 @@ fun AboutSection(
                     // Small screen - adaptive grid layout based on available platforms
                     val chunkedPlatforms = socialMediaPlatforms.chunked(2)
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                     ) {
                         chunkedPlatforms.forEach { rowPlatforms ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                             ) {
                                 rowPlatforms.forEach { platform ->
                                     SocialMediaButton(
@@ -194,17 +219,19 @@ fun AboutSection(
                         }
                     }
                 }
+                }
             }
         }
 
         // Skills Preview Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+            shape = DesignSystem.Cards.shape
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(DesignSystem.Cards.padding),
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -214,7 +241,8 @@ fun AboutSection(
                     Text(
                         text = "Top Skills",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     TextButton(
                         onClick = { onSectionSelected(NavigationSection.SKILLS) }
@@ -226,18 +254,19 @@ fun AboutSection(
                 }
                 
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                 ) {
                     items(skills.take(5)) { skill ->
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer
-                            )
+                            ),
+                            shape = DesignSystem.Cards.shape
                         ) {
                             Row(
-                                modifier = Modifier.padding(12.dp),
+                                modifier = Modifier.padding(DesignSystem.Spacing.md),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                             ) {
                                 Icon(
                                     imageVector = skill.icon,
@@ -260,11 +289,12 @@ fun AboutSection(
         // Articles Preview Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+            shape = DesignSystem.Cards.shape
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.padding(DesignSystem.Cards.padding),
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -274,7 +304,8 @@ fun AboutSection(
                     Text(
                         text = "Latest Articles",
                         style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     TextButton(
                         onClick = { onSectionSelected(NavigationSection.ARTICLES) }
@@ -286,18 +317,19 @@ fun AboutSection(
                 }
                 
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                 ) {
                     articles.take(2).forEach { article ->
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceVariant
                             ),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = DesignSystem.Cards.shape
                         ) {
                             Column(
-                                modifier = Modifier.padding(16.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                modifier = Modifier.padding(DesignSystem.Spacing.md),
+                                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
                             ) {
                                 Text(
                                     text = article.title,
@@ -313,7 +345,7 @@ fun AboutSection(
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
@@ -354,11 +386,12 @@ private fun SocialMediaButton(
     OutlinedButton(
         onClick = { uriHandler.openUri(url) },
         modifier = modifier.height(56.dp),
-        contentPadding = PaddingValues(16.dp)
+        contentPadding = PaddingValues(DesignSystem.Spacing.md),
+        shape = DesignSystem.Cards.shape
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xs)
         ) {
             Icon(
                 imageVector = icon,

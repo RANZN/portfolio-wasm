@@ -12,6 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ranjan.myportfolio.data.models.Article
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ExternalLink
 
 @Composable
 fun ArticleCard(article: Article) {
@@ -19,24 +22,52 @@ fun ArticleCard(article: Article) {
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        onClick = { uriHandler.openUri(article.link) }
+        elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
+        shape = DesignSystem.Cards.shape,
+        onClick = { uriHandler.openUri(article.link) },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Text(
-                text = article.title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+        Column(
+            modifier = Modifier
+                .padding(DesignSystem.Cards.padding)
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    text = article.title,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = FeatherIcons.ExternalLink,
+                    contentDescription = "Read article",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
+            
             Text(
                 text = article.summary,
                 style = MaterialTheme.typography.bodyMedium,
-                lineHeight = 20.sp
+                lineHeight = 24.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            
+            Spacer(modifier = Modifier.height(DesignSystem.Spacing.lg))
+            
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -56,12 +87,25 @@ fun ArticleCard(article: Article) {
             }
             
             if (article.tags.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xs)
+                ) {
                     items(article.tags) { tag ->
-                        AssistChip(
+                        FilterChip(
+                            selected = false,
                             onClick = { },
-                            label = { Text(tag, fontSize = 10.sp) }
+                            label = { 
+                                Text(
+                                    tag, 
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Medium
+                                ) 
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
                         )
                     }
                 }

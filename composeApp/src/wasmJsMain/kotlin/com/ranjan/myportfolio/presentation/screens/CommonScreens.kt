@@ -1,26 +1,47 @@
 package com.ranjan.myportfolio.presentation.screens
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.AlertCircle
+import compose.icons.feathericons.RefreshCw
 
 @Composable
 fun LoadingScreen() {
+    val infiniteTransition = rememberInfiniteTransition(label = "loading")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1.2f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "scale"
+    )
+    
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg)
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(
+                modifier = Modifier.size(48.dp),
+                strokeWidth = 4.dp,
+                color = MaterialTheme.colorScheme.primary
+            )
             Text(
                 text = "Loading portfolio...",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -37,30 +58,63 @@ fun ErrorScreen(
         contentAlignment = Alignment.Center
     ) {
         Card(
-            modifier = Modifier.padding(16.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(DesignSystem.Spacing.lg)
+                .widthIn(max = DesignSystem.Layout.contentMaxWidth),
+            elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.hoverElevationDp),
+            shape = DesignSystem.Cards.shape,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Column(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(DesignSystem.Cards.padding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg)
             ) {
-                Text(
-                    text = "Error",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.error
+                Icon(
+                    imageVector = FeatherIcons.AlertCircle,
+                    contentDescription = "Error",
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.error
                 )
+                
+                Text(
+                    text = "Oops! Something went wrong",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
+                
                 Text(
                     text = error,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                        shape = DesignSystem.Cards.shape
+                    ) {
                         Text("Dismiss")
                     }
-                    Button(onClick = onRetry) {
+                    Button(
+                        onClick = onRetry,
+                        modifier = Modifier.weight(1f),
+                        shape = DesignSystem.Cards.shape
+                    ) {
+                        Icon(
+                            imageVector = FeatherIcons.RefreshCw,
+                            contentDescription = "Retry",
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(DesignSystem.Spacing.xs))
                         Text("Retry")
                     }
                 }
