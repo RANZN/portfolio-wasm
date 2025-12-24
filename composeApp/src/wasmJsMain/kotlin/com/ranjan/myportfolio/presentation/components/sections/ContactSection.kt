@@ -4,7 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -27,7 +27,13 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
         SectionTitle("Contact Me")
 
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    shape = DesignSystem.Cards.shape
+                ),
             elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
             shape = DesignSystem.Cards.shape,
             colors = CardDefaults.cardColors(
@@ -35,71 +41,24 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                 contentColor = MaterialTheme.colorScheme.onSurface
             )
         ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
-                        shape = DesignSystem.Cards.shape
-                    ),
-                shape = DesignSystem.Cards.shape,
-                color = MaterialTheme.colorScheme.surface
+            Column(
+                modifier = Modifier.padding(DesignSystem.Cards.padding),
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
             ) {
-                Column(
-                    modifier = Modifier.padding(DesignSystem.Cards.padding),
-                    verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
-                ) {
-                    Text(
-                        text = "Let's work together!",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "I'm always interested in new opportunities and exciting projects. Feel free to reach out!",
-                        style = MaterialTheme.typography.bodyLarge,
-                        lineHeight = 24.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                Text(
+                    text = "Let's work together!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "I'm always interested in new opportunities and exciting projects. Feel free to reach out!",
+                    style = MaterialTheme.typography.bodyLarge,
+                    lineHeight = 24.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
-                    Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
-                    
-                    // Email display with icon
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { uriHandler.openUri("mailto:${contactInfo.email}") },
-                        shape = DesignSystem.Cards.shape,
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
-                        border = androidx.compose.foundation.BorderStroke(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                        )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(DesignSystem.Spacing.md),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.md)
-                        ) {
-                            Icon(
-                                imageVector = FeatherIcons.Mail,
-                                contentDescription = "Email",
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                            Text(
-                                text = contactInfo.email,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
+                Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
 
                 // Create list of available contact methods
                 val contactMethods = buildList {
@@ -111,7 +70,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             action = { uriHandler.openUri("mailto:${contactInfo.email}") }
                         )
                     )
-                    
+
                     // LinkedIn (always available)
                     add(
                         ContactMethod(
@@ -120,7 +79,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             action = { uriHandler.openUri(contactInfo.linkedin) }
                         )
                     )
-                    
+
                     // GitHub (always available)
                     add(
                         ContactMethod(
@@ -129,7 +88,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             action = { uriHandler.openUri(contactInfo.github) }
                         )
                     )
-                    
+
                     // Twitter (only if available)
                     contactInfo.twitter?.let { twitterUrl ->
                         add(
@@ -140,7 +99,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             )
                         )
                     }
-                    
+
                     // Medium (only if available)
                     contactInfo.medium?.let { mediumUrl ->
                         add(
@@ -207,7 +166,6 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             }
                         }
                     }
-                }
                 }
             }
         }
