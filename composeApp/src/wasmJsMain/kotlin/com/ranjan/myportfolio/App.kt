@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ranjan.myportfolio.presentation.viewmodel.PortfolioViewModel
 import com.ranjan.myportfolio.presentation.components.navigation.*
+import com.ranjan.myportfolio.presentation.events.UiEvent
 import com.ranjan.myportfolio.presentation.screens.*
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioDarkColorScheme
 import com.ranjan.myportfolio.presentation.ui.theme.PortfolioLightColorScheme
@@ -23,6 +24,16 @@ fun App() {
     val uiState by viewModel.uiState.collectAsState()
 
     val portfolioState = uiState.portfolioState
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is UiEvent.OpenUrl -> {
+                    window.open(event.url, "_blank")
+                }
+            }
+        }
+    }
 
     LaunchedEffect(portfolioState.profile.name, uiState.selectedSection) {
         document.title = "${portfolioState.profile.name} | Portfolio"
@@ -83,6 +94,7 @@ fun App() {
                                 portfolioState = portfolioState,
                                 selectedSection = uiState.selectedSection,
                                 onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
+                                onClick = { viewModel.onClick(it) },
                                 modifier = Modifier.weight(1f),
                                 isLargeScreen = isLargeScreen
                             )
@@ -102,6 +114,7 @@ fun App() {
                                 portfolioState = portfolioState,
                                 selectedSection = uiState.selectedSection,
                                 onSectionSelected = { viewModel.handleIntent(PortfolioIntent.SelectSection(it)) },
+                                onClick = { viewModel.onClick(it) },
                                 modifier = Modifier.weight(1f),
                                 isLargeScreen = isLargeScreen
                             )

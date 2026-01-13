@@ -1,5 +1,8 @@
 package com.ranjan.myportfolio.data.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Education(
     val degree: String,
     val institution: String,

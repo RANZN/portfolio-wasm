@@ -8,7 +8,10 @@ import com.ranjan.myportfolio.presentation.components.common.SectionTitle
 import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
-fun ArticlesSection(articles: List<Article>, isLargeScreen: Boolean) {
+fun ArticlesSection(
+    articles: List<Article>,
+    onClick: (String) -> Unit = {},
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)
     ) {
@@ -18,7 +21,7 @@ fun ArticlesSection(articles: List<Article>, isLargeScreen: Boolean) {
             verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.lg)
         ) {
             articles.forEach { article ->
-                ArticleCard(article)
+                ArticleCard(article, onClick)
             }
         }
     }

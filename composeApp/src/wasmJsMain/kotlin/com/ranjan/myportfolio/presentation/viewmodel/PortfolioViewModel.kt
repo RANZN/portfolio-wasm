@@ -2,13 +2,17 @@ package com.ranjan.myportfolio.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.ranjan.myportfolio.data.models.*
 import com.ranjan.myportfolio.domain.models.PortfolioState
 import com.ranjan.myportfolio.domain.repository.PortfolioRepository
+import com.ranjan.myportfolio.presentation.events.UiEvent
 import com.ranjan.myportfolio.presentation.intent.PortfolioIntent
 import com.ranjan.myportfolio.presentation.navigation.NavigationManager
 import com.ranjan.myportfolio.presentation.ui.PortfolioUiState
@@ -36,6 +40,9 @@ class PortfolioViewModel(
     )
     
     val uiState: StateFlow<PortfolioUiState> = _uiState.asStateFlow()
+
+    private val _events = MutableSharedFlow<UiEvent>()
+    val events: SharedFlow<UiEvent> = _events.asSharedFlow()
 
     init {
         initializeNavigation()
@@ -136,5 +143,13 @@ class PortfolioViewModel(
 
     private fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    fun onClick(url: String) {
+        if (url.isNotBlank()) {
+            viewModelScope.launch {
+                _events.emit(UiEvent.OpenUrl(url))
+            }
+        }
     }
 }

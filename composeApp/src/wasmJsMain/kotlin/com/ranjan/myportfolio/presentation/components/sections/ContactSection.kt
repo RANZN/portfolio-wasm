@@ -1,13 +1,10 @@
 package com.ranjan.myportfolio.presentation.components.sections
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,8 +17,11 @@ import com.ranjan.myportfolio.presentation.components.common.SectionTitle
 import com.ranjan.myportfolio.presentation.ui.design.DesignSystem
 
 @Composable
-fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
-    val uriHandler = LocalUriHandler.current
+fun ContactSection(
+    contactInfo: ContactInfo,
+    onClick: (String) -> Unit = {},
+    isLargeScreen: Boolean
+) {
 
     Column(verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)) {
         SectionTitle("Contact Me")
@@ -67,7 +67,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                         ContactMethod(
                             icon = FeatherIcons.Mail,
                             label = "Email",
-                            action = { uriHandler.openUri("mailto:${contactInfo.email}") }
+                            action = { onClick("mailto:${contactInfo.email}") }
                         )
                     )
 
@@ -76,7 +76,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                         ContactMethod(
                             icon = SimpleIcons.Linkedin,
                             label = "LinkedIn",
-                            action = { uriHandler.openUri(contactInfo.linkedin) }
+                            action = { onClick(contactInfo.linkedin) }
                         )
                     )
 
@@ -85,7 +85,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                         ContactMethod(
                             icon = SimpleIcons.Github,
                             label = "GitHub",
-                            action = { uriHandler.openUri(contactInfo.github) }
+                            action = { onClick(contactInfo.github) }
                         )
                     )
 
@@ -95,7 +95,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             ContactMethod(
                                 icon = SimpleIcons.Twitter,
                                 label = "Twitter",
-                                action = { uriHandler.openUri(twitterUrl) }
+                                action = { onClick(twitterUrl) }
                             )
                         )
                     }
@@ -106,7 +106,7 @@ fun ContactSection(contactInfo: ContactInfo, isLargeScreen: Boolean) {
                             ContactMethod(
                                 icon = SimpleIcons.Medium,
                                 label = "Medium",
-                                action = { uriHandler.openUri(mediumUrl) }
+                                action = { onClick(mediumUrl) }
                             )
                         )
                     }

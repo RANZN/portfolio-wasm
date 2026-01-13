@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,14 +16,15 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.ExternalLink
 
 @Composable
-fun ProjectCard(project: Project) {
-    val uriHandler = LocalUriHandler.current
-    
+fun ProjectCard(
+    project: Project,
+    onClick: (String) -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
         shape = DesignSystem.Cards.shape,
-        onClick = { uriHandler.openUri(project.link) },
+        onClick = { onClick(project.link) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
@@ -54,18 +54,18 @@ fun ProjectCard(project: Project) {
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(DesignSystem.Spacing.md))
-            
+
             Text(
                 text = project.description,
                 style = MaterialTheme.typography.bodyMedium,
                 lineHeight = 24.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            
+
             Spacer(modifier = Modifier.height(DesignSystem.Spacing.lg))
-            
+
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.sm)
             ) {
@@ -73,12 +73,12 @@ fun ProjectCard(project: Project) {
                     FilterChip(
                         selected = false,
                         onClick = { },
-                        label = { 
+                        label = {
                             Text(
-                                tech, 
+                                tech,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium
-                            ) 
+                            )
                         },
                         colors = FilterChipDefaults.filterChipColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,

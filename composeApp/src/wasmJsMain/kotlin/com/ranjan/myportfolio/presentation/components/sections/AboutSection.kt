@@ -25,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -52,9 +50,9 @@ fun AboutSection(
     skills: List<Skill>,
     articles: List<Article>,
     onSectionSelected: (NavigationSection) -> Unit,
+    onClick: (String) -> Unit = {},
     isLargeScreen: Boolean
 ) {
-    val uriHandler = LocalUriHandler.current
 
     Column(verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.xl)) {
         // Profile Section
@@ -186,7 +184,7 @@ fun AboutSection(
                                 icon = platform.icon,
                                 label = platform.label,
                                 url = platform.url,
-                                uriHandler = uriHandler,
+                                onClick = onClick,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -207,7 +205,7 @@ fun AboutSection(
                                         icon = platform.icon,
                                         label = platform.label,
                                         url = platform.url,
-                                        uriHandler = uriHandler,
+                                        onClick = onClick,
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
@@ -380,11 +378,11 @@ private fun SocialMediaButton(
     icon: ImageVector,
     label: String,
     url: String,
-    uriHandler: UriHandler,
+    onClick: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     OutlinedButton(
-        onClick = { uriHandler.openUri(url) },
+        onClick = { onClick(url) },
         modifier = modifier.height(56.dp),
         contentPadding = PaddingValues(DesignSystem.Spacing.md),
         shape = DesignSystem.Cards.shape

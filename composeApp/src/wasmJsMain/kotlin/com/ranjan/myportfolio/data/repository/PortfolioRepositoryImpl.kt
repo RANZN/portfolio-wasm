@@ -8,9 +8,16 @@ import com.ranjan.myportfolio.data.models.NavigationSection
 import com.ranjan.myportfolio.data.models.Profile
 import com.ranjan.myportfolio.data.models.Project
 import com.ranjan.myportfolio.data.models.Skill
+import com.ranjan.myportfolio.data.service.JsonDataService
+import com.ranjan.myportfolio.data.service.PortfolioJsonData
 import com.ranjan.myportfolio.domain.repository.PortfolioRepository
 
-class PortfolioRepositoryImpl : PortfolioRepository {
+class PortfolioRepositoryImpl(
+    private val jsonDataService: JsonDataService
+) : PortfolioRepository {
+    
+    // Cache the loaded JSON data
+    private var cachedJsonData: PortfolioJsonData? = null
 
     override suspend fun getProfile(): Profile {
         return Profile(
@@ -23,11 +30,32 @@ class PortfolioRepositoryImpl : PortfolioRepository {
 
     override suspend fun getSkills(): List<Skill> = UserData.SKILLS
 
-    override suspend fun getProjects(): List<Project> = UserData.PROJECTS
+    override suspend fun getProjects(): List<Project> {
+        val data = loadJsonData()
+        return data?.projects ?: emptyList()
+    }
 
-    override suspend fun getArticles(): List<Article> = UserData.ARTICLES
+    override suspend fun getArticles(): List<Article> {
+        val data = loadJsonData()
+        return data?.articles ?: emptyList()
+    }
 
-    override suspend fun getEducation(): List<Education> = UserData.EDUCATION
+    override suspend fun getEducation(): List<Education> {
+        val data = loadJsonData()
+        return data?.education ?: emptyList()
+    }
+    
+    /**
+     * Loads JSON data once and caches it for subsequent calls.
+     * Loads from local resources (bundled JSON file).
+     * The JSON file is loaded only once per app session.
+     */
+    private suspend fun loadJsonData(): PortfolioJsonData? {
+        if (cachedJsonData == null) {
+            cachedJsonData = jsonDataService.loadPortfolioData()
+        }
+        return cachedJsonData
+    }
 
     override suspend fun getContactInfo(): ContactInfo {
         return ContactInfo(

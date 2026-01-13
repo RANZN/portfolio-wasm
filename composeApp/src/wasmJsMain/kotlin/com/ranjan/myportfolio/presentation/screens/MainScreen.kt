@@ -19,6 +19,7 @@ fun MainContent(
     portfolioState: PortfolioState,
     selectedSection: NavigationSection,
     onSectionSelected: (NavigationSection) -> Unit = {},
+    onClick: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     isLargeScreen: Boolean
 ) {
@@ -59,6 +60,7 @@ fun MainContent(
                     skills = portfolioState.skills,
                     articles = portfolioState.articles,
                     onSectionSelected = onSectionSelected,
+                    onClick = onClick,
                     isLargeScreen = isLargeScreen
                 )
                 SKILLS -> SkillsSection(
@@ -67,11 +69,12 @@ fun MainContent(
                 )
                 PROJECTS -> ProjectsSection(
                     projects = portfolioState.projects,
+                    onClick = onClick,
                     isLargeScreen = isLargeScreen
                 )
                 ARTICLES -> ArticlesSection(
                     articles = portfolioState.articles,
-                    isLargeScreen = isLargeScreen
+                    onClick = onClick,
                 )
                 EDUCATION -> EducationSection(
                     education = portfolioState.education,
@@ -79,6 +82,7 @@ fun MainContent(
                 )
                     CONTACT -> ContactSection(
                         contactInfo = portfolioState.contactInfo,
+                        onClick = onClick,
                         isLargeScreen = isLargeScreen
                     )
                 }

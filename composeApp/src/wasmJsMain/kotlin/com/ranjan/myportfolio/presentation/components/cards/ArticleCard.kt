@@ -7,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,14 +16,15 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.ExternalLink
 
 @Composable
-fun ArticleCard(article: Article) {
-    val uriHandler = LocalUriHandler.current
-    
+fun ArticleCard(
+    article: Article,
+    onClick: (String) -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = DesignSystem.Cards.defaultElevationDp),
         shape = DesignSystem.Cards.shape,
-        onClick = { uriHandler.openUri(article.link) },
+        onClick = { onClick(article.link) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
